@@ -13,6 +13,26 @@ import AddBlog from "./pages/Dashboard/AddBlog";
 import BlogList from "./pages/Dashboard/BlogList";
 import Comments from "./pages/Dashboard/Comments";
 import "quill/dist/quill.snow.css";
+import { AppProvider, useAppContext } from "./context/AppContex";
+import { Toaster } from "react-hot-toast";
+
+const AppContent = () => {
+  const { token } = useAppContext();
+  return (
+    <Routes>
+      <Route index element={<LandingPage />} />
+      <Route path="/blog/:id" element={<BlogDetail />} />
+      <Route path="/signup" element={<SignUp />} />
+      <Route path="/signin" element={<SignIn />} />
+      <Route path="/admin/*" element={token ? <Layout /> : <SignIn />}>
+        <Route index element={<Dashboard />} />
+        <Route path="addblogs" element={<AddBlog />} />
+        <Route path="bloglist" element={<BlogList />} />
+        <Route path="comment" element={<Comments />} />
+      </Route>
+    </Routes>
+  );
+};
 
 function App() {
   useEffect(() => {
@@ -21,24 +41,17 @@ function App() {
       once: true,
     });
   }, []);
+
   return (
-    <Router>
-      <div className="overflow-hidden">
-        <Navbar />
-        <Routes>
-          <Route index element={<LandingPage />} />
-          <Route path="/blog/:id" element={<BlogDetail />} />
-          <Route path="/signup" element={<SignUp />} />
-          <Route path="/signin" element={<SignIn />} />
-          <Route path="/dashboard" element={<Layout />}>
-            <Route index element={<Dashboard />} />
-            <Route path="addblogs" element={<AddBlog />} />
-            <Route path="bloglist" element={<BlogList />} />
-            <Route path="comment" element={<Comments />} />
-          </Route>
-        </Routes>
-      </div>
-    </Router>
+    <AppProvider>
+      <Toaster />
+      <Router>
+        <div className="overflow-hidden">
+          <Navbar />
+          <AppContent />
+        </div>
+      </Router>
+    </AppProvider>
   );
 }
 

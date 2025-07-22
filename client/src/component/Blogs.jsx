@@ -2,35 +2,49 @@ import { useState } from "react";
 import Button from "../ui/Button";
 import { SampleBlog } from "../data/blogs";
 import { Link } from "react-router-dom";
+import { useAppContext } from "@/context/AppContex";
+import { format } from "date-fns";
 
 const Categories = ["All", "Fashion", "Beauty", "Technology"];
 
 function Blogs() {
-  const [visibleCount, setVisibleCount] = useState(6);
+  const { blogs, input } = useAppContext();
+  console.log(blogs);
+  // const [visibleCount, setVisibleCount] = useState(6);
   const [selectedCategory, setSelectedCategory] = useState("All");
 
-  const handleShowMore = () => {
-    setVisibleCount((prev) => prev + 3);
-  };
+  // const handleShowMore = () => {
+  //   setVisibleCount((prev) => prev + 3);
+  // };
 
-  const handleShowLess = () => {
-    setVisibleCount((prev) => Math.max(prev - 3, 6));
-  };
+  // const handleShowLess = () => {
+  //   setVisibleCount((prev) => Math.max(prev - 3, 6));
+  // };
 
   const handleCategoryChange = (category) => {
     setSelectedCategory(category);
-    setVisibleCount(6);
   };
 
   // Filter
   const filterBlogs =
     selectedCategory === "All"
-      ? SampleBlog
-      : SampleBlog.filter((blog) => blog.category === selectedCategory);
+      ? blogs
+      : blogs.filter(
+          (blog) =>
+            blog.category.toLowerCase() === selectedCategory.toLowerCase()
+        );
 
-  const visibleBlogs = filterBlogs.slice(0, visibleCount);
-  const hasMore = visibleCount < filterBlogs.length;
-  const hasLess = visibleCount > 6 && filterBlogs.length > 6;
+  const searchBlogs = () => {
+    const blogList = filterBlogs;
+    if (input === "") {
+      return blogList;
+    }
+    return blogList.filter(
+      (blog) =>
+        blog.title.toLowerCase().includes(input.toLowerCase()) ||
+        blog.category.toLowerCase().includes(input.toLowerCase())
+    );
+  };
 
   return (
     <section className="lg:px-20 px-5 py-4">
@@ -56,8 +70,8 @@ function Blogs() {
         className=" grid lg:grid-cols-3 grid-cols-1 gap-4 mt-8"
         data-aos="fade-left"
       >
-        {visibleBlogs.map((blog) => (
-          <Link to={`/blog/${blog.id}`} key={blog.id}>
+        {searchBlogs().map((blog) => (
+          <Link to={`/blog/${blog._id}`} key={blog._id}>
             <div className="bg-white p-4 shadow-sm">
               <img src={blog.image} alt={blog.title} className="mb-4" />
               <Button className="border-blue-500 border px-4 font-semibold py-1 rounded-full ">
@@ -65,20 +79,16 @@ function Blogs() {
               </Button>
               <h2 className="font-bold mt-2">{blog.title}</h2>
               <p className="mt-1">{blog.excerpt}</p>
-              <div className="flex justify-between mt-2 ">
-                <div>
-                  <p className="font-mono font-bold">{blog.author}</p>
-                  <p className="font-semibold">{blog.date}</p>
-                </div>
-                <div>
-                  <p className="text-blue-500">{blog.readTime}</p>
-                </div>
-              </div>
+              <p className="mt-1">{blog.description}</p>
+              <p className="mt-1">{blog.isPublished}</p>
+              <p className="mt-1">
+                {format(new Date(blog.createdAt), "MMM dd, yyyy")}
+              </p>
             </div>
           </Link>
         ))}
       </div>
-      {hasMore && (
+      {/* {hasMore && (
         <div className="mt-8 flex justify-center">
           <Button
             onClick={handleShowMore}
@@ -87,9 +97,9 @@ function Blogs() {
             Load More
           </Button>
         </div>
-      )}
+      )} */}
 
-      {hasLess && (
+      {/* {hasLess && (
         <div className="mt-8 flex justify-center">
           <Button
             onClick={handleShowLess}
@@ -98,7 +108,7 @@ function Blogs() {
             Load Less
           </Button>
         </div>
-      )}
+      )} */}
     </section>
   );
 }

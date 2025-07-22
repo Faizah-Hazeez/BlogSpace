@@ -1,34 +1,65 @@
 import { useForm } from "react-hook-form";
 import Button from "../ui/Button";
 import Footer from "../component/Footer";
+import { useAppContext } from "@/context/AppContex";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 function SignIn() {
   const { register, formState, handleSubmit } = useForm();
   const { errors } = formState;
+  const { axios, setToken } = useAppContext();
+  const navigate = useNavigate();
 
-  function onSubmit({ fullname, email, password }) {
-    console.log(fullname, email, password);
-  }
+  const onSubmit = async (data) => {
+    try {
+      const response = await axios.post("/api/admin/login", {
+        email: data.email,
+        password: data.password,
+      });
+
+      if (response.data.success) {
+        setToken(data.token);
+        localStorage.setItem("token", data.token);
+        axios.defaults.headers.common["Authorization"];
+        navigate("/admin");
+      } else {
+        toast.error(data.message);
+        console.log(data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+      console.log(error.message, `this is an error`);
+    }
+  };
   return (
     <>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="lg:px-10 px-4 py-6 bg-white shadow-sm lg:w-1/2 w-full lg:mx-auto lg:my-10 space-y-4 rounded-sm"
+        className="lg:px-10 px-4 py-6 bg-white shadow-sm lg:w-1/2 w-full lg:mx-auto lg:my-10 rounded-sm space-y-4"
       >
-        <h1 className="text-center font-bold lg:text-3xl text-2xl font-default-family">
-          Log<span className="text-blue-400 italic">in</span>{" "}
-        </h1>
+        <div>
+          <h1 className="text-center font-bold lg:text-3xl text-2xl font-default-family">
+            Admin
+            <span className="text-blue-400 italic"> Login</span>{" "}
+          </h1>
+          <p className="text-center text-lg">
+            Enter your credentials to access the admin panel
+          </p>
+        </div>
 
-        <div className="flex flex-col">
-          <label className="text-xl font-semibold font-default-family">
+        <div className="flex flex-col ">
+          <label className="text-xl font-semibold font-default-family text-gray-700">
             Email:
           </label>
           <input
             type="email"
             id="email"
-            className="border rounded-sm p-2"
+            placeholder="Enter your email"
+            className="border-b-2 outline-0 rounded-sm p-2"
             {...register("email", {
               required: "This field is required",
+
               pattern: {
                 value: /\S+@\S+\.\S+/,
                 message: "Please provide a valid email address",
@@ -40,15 +71,17 @@ function SignIn() {
           )}
         </div>
         <div className="flex flex-col">
-          <label className="text-xl font-semibold font-default-family">
+          <label className="text-xl font-semibold font-default-family text-gray-700">
             Password:
           </label>
           <input
             type="password"
             id="password"
-            className="border rounded-sm p-2"
+            placeholder="Enter your password"
+            className="border-b-2 outline-0 rounded-sm p-2 bg-transparent"
             {...register("password", {
               required: "This field is required",
+
               minLength: {
                 value: 8,
                 message: "Password needs a minimum of 8 characters",
@@ -60,7 +93,7 @@ function SignIn() {
           )}
         </div>
 
-        <Button className="border border-blue-500 rounded-sm py-2 px-6 font-default-family font-semibold hover:bg-blue-500 hover:text-white mx-auto">
+        <Button className="border  rounded-sm py-2 px-6 font-default-family font-semibold hover:bg-blue-500 text-white mx-auto w-full bg-blue-400">
           Login
         </Button>
       </form>

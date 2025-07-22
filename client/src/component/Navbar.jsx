@@ -1,47 +1,28 @@
 import { useState } from "react";
 import Button from "../ui/Button";
 import { Plus, CircleUserRound, Menu, X } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Logo from "@/ui/Logo";
+import { useAppContext } from "@/context/AppContex";
 
 function Navbar() {
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
-  const [isOpen, setIsOpen] = useState(false);
-
-  const handleNav = () => setIsOpen((open) => !open);
+  const navigate = useNavigate();
+  const { token } = useAppContext();
   return (
     <header className="flex justify-between lg:px-20 px-5 py-4 border-b-1 border-b-blue-200 w-full">
       <Logo />
-      {/* desktop view */}
-      <nav className="lg:flex gap-4 font-serif hidden">
-        {isLoggedIn ? (
-          <div className="flex gap-2">
-            <Link to="/signin">
-              <Button className="bg-blue-400 px-6 rounded-full  text-white py-1 text-lg hover:bg-blue-500">
-                Login
-              </Button>
-            </Link>
-            <Link to="signup">
-              <Button className="border-blue-500 rounded-full border px-6 py-1 text-lg">
-                Signup
-              </Button>
-            </Link>
-          </div>
-        ) : (
-          <div className="flex justify-center items-center gap-2">
-            <Button className="bg-blue-400 px-4 rounded-sm text-white py-1 text-lg hover:bg-blue-500 flex items-center gap-1">
-              <Plus />
-              Write
-            </Button>
-
-            <Button className="border-blue-500 rounded-sm border px-4 py-1 text-lg">
-              Logout
-            </Button>
-          </div>
-        )}
+      <nav className="flex gap-4 font-serif ">
+        <div className="flex gap-2">
+          <Button
+            onClick={() => navigate("/admin")}
+            className="bg-blue-400 px-6 rounded-full  text-white py-1 text-lg hover:bg-blue-500"
+          >
+            {token ? "Dashboard" : "Login"}
+          </Button>
+        </div>
       </nav>
       {/* mobile view */}
-      <nav className="visible lg:hidden relative">
+      {/* <nav className="visible lg:hidden relative">
         <Button onClick={handleNav}>{!isOpen ? <Menu /> : <X />}</Button>
 
         {isOpen && (
@@ -69,7 +50,7 @@ function Navbar() {
             )}
           </div>
         )}
-      </nav>
+      </nav> */}
     </header>
   );
 }
