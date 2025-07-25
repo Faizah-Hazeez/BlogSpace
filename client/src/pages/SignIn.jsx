@@ -19,9 +19,10 @@ function SignIn() {
       });
 
       if (response.data.success) {
-        setToken(data.token);
-        localStorage.setItem("token", data.token);
-        axios.defaults.headers.common["Authorization"];
+        const newToken = response.data.token;
+        setToken(newToken);
+        localStorage.setItem("token", newToken);
+        axios.defaults.headers.common["Authorization"] = `Bearer ${newToken}`;
         navigate("/admin");
       } else {
         toast.error(data.message);

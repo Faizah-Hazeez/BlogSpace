@@ -3,14 +3,15 @@ import axios from "axios";
 import toast from "react-hot-toast";
 // import { useNavigate } from "react-router-dom";
 
-axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
+axios.defaults.baseURL =
+  import.meta.env.VITE_BASE_URL || "http://localhost:3000";
 
 const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
   // const navigate = useNavigate();
 
-  const [token, setToken] = useState(null);
+  const [token, setToken] = useState(localStorage.getItem("token") || null);
   const [blogs, setBlogs] = useState([]);
   const [input, setInput] = useState("");
 
@@ -19,22 +20,32 @@ export const AppProvider = ({ children }) => {
       const { data } = await axios.get("/api/blog/all");
       data.success ? setBlogs(data.blogs) : toast.error("nothing to show");
     } catch (error) {
-      toast.error(" not fetching");
+      toast.error(error, ":not fetching");
     }
   };
 
   useEffect(() => {
     fetchBlogs();
-    const token = localStorage.getItem("token");
-    if (token) {
-      setToken(token);
-      axios.defaults.headers.common["Authorization"] = `${token}`;
+    const storedToken = localStorage.getItem("token");
+    if (storedToken) {
+      setToken(storedToken);
+    } else {
+      delete axios.defaults.headers.common["Authorization"];
     }
   }, []);
 
+  useEffect(() => {
+    if (token) {
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      console.log("Token set in headers:", token); // Debug
+    } else {
+      delete axios.defaults.headers.common["Authorization"];
+      console.log("No token, removed Authorization header");
+    }
+  }, [token]);
+
   const value = {
     axios,
-
     token,
     setToken,
     blogs,

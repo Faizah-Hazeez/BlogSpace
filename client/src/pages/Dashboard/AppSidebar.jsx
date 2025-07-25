@@ -22,11 +22,10 @@ import { cn } from "@/lib/utils";
 
 // Define navigation items
 const navItems = [
-  { title: "Dashboard", url: "/dashboard", icon: Home },
-  { title: "Add Blogs", url: "/dashboard/addblogs", icon: CirclePlus },
-  { title: "Blog lists", url: "/dashboard/bloglist", icon: ScrollText },
-  { title: "Comments", url: "/dashboard/comment", icon: MessageCircleHeart },
-  { title: "Community", url: "/category/technology", icon: Handshake },
+  { title: "Dashboard", url: "/admin", icon: Home },
+  { title: "Add Blogs", url: "/admin/addblogs", icon: CirclePlus },
+  { title: "Blog lists", url: "/admin/bloglist", icon: ScrollText },
+  { title: "Comments", url: "/admin/comment", icon: MessageCircleHeart },
 ];
 
 export function AppSidebar() {
