@@ -16,9 +16,11 @@ import {
   CirclePlus,
   MessageCircleHeart,
   Handshake,
+  LogOut,
 } from "lucide-react";
 import Logo from "@/ui/Logo";
 import { cn } from "@/lib/utils";
+import { useAppContext } from "@/context/AppContex";
 
 // Define navigation items
 const navItems = [
@@ -29,7 +31,12 @@ const navItems = [
 ];
 
 export function AppSidebar() {
+  const { logout, user } = useAppContext();
   const { isCollapsed } = useSidebar();
+
+  const handleLogout = () => {
+    logout();
+  };
   return (
     <Sidebar>
       <SidebarContent className="mt-2 pl-4">
@@ -49,6 +56,16 @@ export function AppSidebar() {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
+              {/* logout */}
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  onClick={handleLogout}
+                  className="text-red-600 hover:text-red-700 hover:bg-red-50 cursor-pointer mt-[100%]"
+                >
+                  <LogOut className="w-5 h-5" />
+                  <span className="text-xl">Logout</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

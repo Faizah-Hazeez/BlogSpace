@@ -14,12 +14,19 @@ function AddBlog() {
   const [excerpt, setExcerpt] = useState("");
   const [category, setCategory] = useState("fashion");
   const [image, setImage] = useState(null);
-  const [isPublish, setIsPublish] = useState(false);
+  const [isPublished, setIsPublish] = useState(false);
 
   const handleSubmit = async (e) => {
     try {
       e.preventDefault();
       setIsAdding(true);
+
+      if (!token || token === "undefined") {
+        toast.error("You must be logged in to create a blog post.");
+        console.log("No valid token available:", token);
+
+        return;
+      }
 
       if (!image) {
         toast.error("Please select an image to upload.");
@@ -34,7 +41,7 @@ function AddBlog() {
         category,
         excerpt,
         description,
-        isPublish,
+        isPublished,
         image,
       });
       console.log("Current token:", token);
@@ -45,29 +52,47 @@ function AddBlog() {
         category,
         excerpt,
         description,
-        isPublish,
+        isPublished,
       };
       console.log(blog);
       const formData = new FormData();
       formData.append("blog", JSON.stringify(blog));
       formData.append("image", image);
 
-      const { data } = await axios.post("/api/blog/add", formData);
+      const { data } = await axios.post("/api/blog/add", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
       if (data.success) {
         toast.success(data.message);
-        setImage(false);
+        // Reset form
+        setImage(null);
         setTitle("");
         setCategory("fashion");
         setExcerpt("");
+        setIsPublish(false);
         quillRef.current.root.innerHTML = "";
       } else {
         toast.error(data.message);
-        console.log(data.message);
+        console.log("Server error:", data.message);
       }
     } catch (error) {
-      toast.error(error.message);
-      console.log(error.message);
+      console.log("Error submotting blog:", error.message);
+      if (error.response) {
+        // Server responded with error status
+        toast.error(error.response.data?.message || "Server error occurred");
+        console.log("Server response:", error.response.data);
+      } else if (error.request) {
+        // Request was made but no response received
+        toast.error("Network error - please check your connection");
+        console.log("Network error:", error.request);
+      } else {
+        // Something else happened
+        toast.error("An unexpected error occurred");
+        console.log("Unexpected error:", error.message);
+      }
     } finally {
       setIsAdding(false);
     }
@@ -84,6 +109,12 @@ function AddBlog() {
       quillRef.current = new Quill(editorRef.current, { theme: "snow" });
     }
   }, []);
+
+  // Debug token changes
+  useEffect(() => {
+    console.log("AddBlog - Token updated:", token);
+  }, [token]);
+
   return (
     <form
       onSubmit={handleSubmit}
@@ -160,7 +191,7 @@ function AddBlog() {
         <input
           type="checkbox"
           id="publish"
-          checked={isPublish} // Use checked for checkbox
+          checked={isPublished} // Use checked for checkbox
           onChange={(e) => setIsPublish(e.target.checked)}
         />
         <p>Publish</p>

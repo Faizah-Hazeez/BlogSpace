@@ -21,16 +21,15 @@ function SignIn() {
       if (response.data.success) {
         const newToken = response.data.token;
         setToken(newToken);
-        localStorage.setItem("token", newToken);
-        axios.defaults.headers.common["Authorization"] = `Bearer ${newToken}`;
         navigate("/admin");
       } else {
-        toast.error(data.message);
+        toast.error(response.data.message || "Login failed");
         console.log(data.message);
       }
     } catch (error) {
-      toast.error(error.message);
-      console.log(error.message, `this is an error`);
+      toast.error(
+        "Login error: " + (error.response?.data?.message || error.message)
+      );
     }
   };
   return (

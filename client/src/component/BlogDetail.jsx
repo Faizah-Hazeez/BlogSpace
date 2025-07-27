@@ -98,7 +98,8 @@ function BlogDetail() {
       <h1 className="font-bold text-blue-400 lg:text-3xl text-xl">
         {data.title}
       </h1>
-      <p className="lg:mt-4 mt-2 lg:text-xl leading-8">{data.content}</p>
+      <p className="lg:mt-4 mt-2 lg:text-xl leading-8">{data.description}</p>
+
       {/* <div className="flex justify-between mt-2">
         <div>
           <p className="font-mono font-bold">{data.author}</p>

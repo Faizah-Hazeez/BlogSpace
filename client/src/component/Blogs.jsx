@@ -79,7 +79,6 @@ function Blogs() {
               </Button>
               <h2 className="font-bold mt-2">{blog.title}</h2>
               <p className="mt-1">{blog.excerpt}</p>
-              <p className="mt-1">{blog.description}</p>
               <p className="mt-1">{blog.isPublished}</p>
               <p className="mt-1">
                 {format(new Date(blog.createdAt), "MMM dd, yyyy")}

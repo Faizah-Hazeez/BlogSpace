@@ -15,6 +15,8 @@ import Comments from "./pages/Dashboard/Comments";
 import "quill/dist/quill.snow.css";
 import { AppProvider, useAppContext } from "./context/AppContex";
 import { Toaster } from "react-hot-toast";
+import ProtectedRoute from "./pages/Dashboard/ProtectedRoute";
+import Logout from "./pages/Logout";
 
 const AppContent = () => {
   const { token } = useAppContext();
@@ -22,8 +24,8 @@ const AppContent = () => {
     <Routes>
       <Route index element={<LandingPage />} />
       <Route path="/blog/:id" element={<BlogDetail />} />
-      <Route path="/signup" element={<SignUp />} />
-      <Route path="/signin" element={<SignIn />} />
+      <Route path="/admin/login" element={<SignIn />} />
+
       <Route path="/admin/*" element={token ? <Layout /> : <SignIn />}>
         <Route index element={<Dashboard />} />
         <Route path="addblogs" element={<AddBlog />} />
