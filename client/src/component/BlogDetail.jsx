@@ -3,7 +3,6 @@ import { SampleBlog, SampleComments } from "../data/blogs";
 import Button from "../ui/Button";
 import { MoveLeft, CircleUserRound } from "lucide-react";
 import { useEffect, useState } from "react";
-import moment from "moment";
 import { useAppContext } from "@/context/AppContex";
 import toast from "react-hot-toast";
 

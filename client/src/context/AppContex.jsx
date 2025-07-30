@@ -13,7 +13,6 @@ export const AppProvider = ({ children }) => {
 
   const [token, setToken] = useState(() => {
     const storedToken = localStorage.getItem("token");
-    console.log("Initial token from localStorage:", storedToken);
     return storedToken;
   });
   const [blogs, setBlogs] = useState([]);
@@ -39,11 +38,11 @@ export const AppProvider = ({ children }) => {
       axios.defaults.headers.common[
         "Authorization"
       ] = `Bearer ${tokenToVerify}`;
-      console.log("Verifying token with backend...");
+      // console.log("Verifying token with backend...");
       const response = await axios.get("api/admin/verify");
 
       if (response.data.success) {
-        console.log("Token verified successfully");
+        // console.log("Token verified successfully");
         setIsAuthenticated(true);
         setUser(response.data.user);
         setIsLoading(false);
@@ -66,7 +65,6 @@ export const AppProvider = ({ children }) => {
       setIsAuthenticated(false);
       setUser(null);
       setIsLoading(false);
-
       return false;
     }
   };
@@ -76,17 +74,14 @@ export const AppProvider = ({ children }) => {
       const { data } = await axios.get("/api/blog/all");
       data.success ? setBlogs(data.blogs) : toast.error("nothing to show");
     } catch (error) {
-      toast.error("Error fetching blogs");
-      console.log("Fetch blogs error:", error);
+      toast.error("Error fetching blogs", error);
     }
   };
 
   // Set up axios header whenever token changes
   useEffect(() => {
-    console.log("Token changed:", token);
     if (token && token !== "undefined" && token !== "null") {
       axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-      console.log("Authorization header set:", `Bearer ${token}`);
       verifyToken(token);
     } else {
       delete axios.defaults.headers.common["Authorization"];

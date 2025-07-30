@@ -39,19 +39,19 @@ export function AppSidebar() {
   };
   return (
     <Sidebar>
-      <SidebarContent className="mt-2 pl-4">
-        <SidebarGroup className="space-y-4">
+      <SidebarContent className="mt-2">
+        <SidebarGroup className="space-y-2">
           <SidebarGroupLabel className={cn(isCollapsed && "hidden")}>
             <Logo />
           </SidebarGroupLabel>
           <SidebarGroupContent className="mt-4">
-            <SidebarMenu className="space-y-4 font-default-family">
+            <SidebarMenu className="space-y-2 font-default-family">
               {navItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
                     <Link to={item.url}>
-                      <item.icon className="w-5 h-5" />
-                      <span className="text-xl">{item.title}</span>
+                      <item.icon className="w-8 h-8" />
+                      <p className="font-medium text-lg">{item.title}</p>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -60,10 +60,10 @@ export function AppSidebar() {
               <SidebarMenuItem>
                 <SidebarMenuButton
                   onClick={handleLogout}
-                  className="text-red-600 hover:text-red-700 hover:bg-red-50 cursor-pointer mt-[100%]"
+                  className="text-red-400 hover:text-red-600 hover:bg-red-50 cursor-pointer mt-[100%]"
                 >
                   <LogOut className="w-5 h-5" />
-                  <span className="text-xl">Logout</span>
+                  <span className="text-lg ">Logout</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>

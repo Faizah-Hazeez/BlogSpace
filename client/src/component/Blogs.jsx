@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "../ui/Button";
 import { SampleBlog } from "../data/blogs";
 import { Link } from "react-router-dom";
@@ -46,6 +46,10 @@ function Blogs() {
     );
   };
 
+  useEffect(() => {
+    searchBlogs();
+  }, []);
+
   return (
     <section className="lg:px-20 px-5 py-4">
       <div
@@ -87,27 +91,6 @@ function Blogs() {
           </Link>
         ))}
       </div>
-      {/* {hasMore && (
-        <div className="mt-8 flex justify-center">
-          <Button
-            onClick={handleShowMore}
-            className="px-6 py-1.5 bg-blue-400 text-white rounded-full hover:bg-blue-500"
-          >
-            Load More
-          </Button>
-        </div>
-      )} */}
-
-      {/* {hasLess && (
-        <div className="mt-8 flex justify-center">
-          <Button
-            onClick={handleShowLess}
-            className="px-6 py-1.5  bg-blue-400 text-white rounded-full hover:bg-blue-500"
-          >
-            Load Less
-          </Button>
-        </div>
-      )} */}
     </section>
   );
 }
