@@ -1,13 +1,16 @@
 import { Button } from "@/components/ui/button";
-import { useForm } from "react-hook-form";
+
 import Quill from "quill";
 import { useEffect, useRef, useState } from "react";
 import { useAppContext } from "@/context/AppContex";
 import toast from "react-hot-toast";
+import { parse } from "marked";
 
 function AddBlog() {
-  const { axios, token, isAuthenticated, user } = useAppContext();
+  const { axios, token, isAuthenticated } = useAppContext();
   const [isAdding, setIsAdding] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   const editorRef = useRef(null);
   const quillRef = useRef(null);
   const [title, setTitle] = useState("");
@@ -100,6 +103,22 @@ function AddBlog() {
 
   const generateContent = async (e) => {
     e.preventDefault();
+    if (!title) return toast.error("Please enter a title");
+    try {
+      setLoading(true);
+      const { data } = await axios.post("/api/blog/generate", {
+        prompt: title,
+      });
+      if (data.success) {
+        quillRef.current.root.innerHTML = parse(data.content);
+      } else {
+        toast.error("Something is wrong:", data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   // quill editor
@@ -186,6 +205,7 @@ function AddBlog() {
           ></div>
           <Button
             type="button"
+            disabled={loading}
             onClick={generateContent}
             className="absolute bottom-1 right-2 ml-2 text-white px-4 py-1.5 rounded hover:underline cursor-pointer bg-blue-400"
           >

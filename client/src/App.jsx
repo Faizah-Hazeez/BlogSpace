@@ -25,7 +25,6 @@ const AppContent = () => {
       <Route index element={<LandingPage />} />
       <Route path="/blog/:id" element={<BlogDetail />} />
       <Route path="/admin/login" element={<SignIn />} />
-
       <Route path="/admin/*" element={token ? <Layout /> : <SignIn />}>
         <Route index element={<Dashboard />} />
         <Route path="addblogs" element={<AddBlog />} />
